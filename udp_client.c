@@ -29,6 +29,10 @@ struct udp_pcb *udp_client_connect(uint8_t *_IPADDR,uint16_t _PortNumber)
       udp_recv(upcb, udp_receive_callback, NULL);
     }
   }
+	else
+	{
+		memp_free(MEMP_UDP_PCB, upcb);
+	}
 	return upcb;
 }
 
@@ -67,7 +71,11 @@ __weak void UDP_client_Recieve(struct udp_pcb *upcb,uint8_t *Buf,uint32_t _Len, 
 
 void udp_client_close(struct udp_pcb *upcb)
 {
-	udp_disconnect(upcb);
+	if(upcb != NULL)
+	{
+		udp_disconnect(upcb);
+		memp_free(MEMP_UDP_PCB, upcb);
+	}
 }
 
 /*****************************END OF FILE****/
